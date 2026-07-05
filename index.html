@@ -1,147 +1,498 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>La Forja del Artesano - Pedido de Pulseras</title>
-<style>
-body{background-color:#0B132B;color:#F4F1DE;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;margin:0;padding:20px;display:flex;flex-direction:column;align-items:center}
-header{text-align:center;margin-bottom:30px;border-bottom:1px solid #C29B62;padding-bottom:15px;width:100%;max-width:600px}
-h1{font-size:1.8rem;letter-spacing:3px;text-transform:uppercase;color:#C29B62;margin:0}
-.sub{color:#9A9FA6;font-size:0.85rem;margin-top:5px}
-.marcador-tesoro{background-color:#111B35;border:2px solid #C29B62;padding:15px;border-radius:8px;width:100%;max-width:560px;box-sizing:border-box;margin-bottom:25px;display:flex;justify-content:space-between;align-items:center;font-weight:bold}
-.precio-total{color:#2ecc71;font-size:1.4rem}
-.seccion-quest{background-color:#111B35;border:1px solid rgba(194,155,98,0.3);border-radius:12px;padding:20px;width:100%;max-width:560px;box-sizing:border-box;margin-bottom:20px}
-h3{margin-top:0;text-transform:uppercase;font-size:1rem;letter-spacing:1px;color:#F4F1DE;border-left:3px solid #C29B62;padding-left:10px}
-.grid-opciones{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:15px}
-.tarjeta-seleccion{border:1px solid #444;background-color:#0e1424;border-radius:8px;padding:12px;cursor:pointer;text-align:center;transition:all 0.3s ease;position:relative}
-.tarjeta-seleccion.activa{border-color:#C29B62;box-shadow:0 0 10px rgba(194,155,98,0.2);background-color:#172242}
-.btn-enviar-recompensa{background-color:#2d6a4f;color:#F4F1DE;border:1px solid #C29B62;padding:15px 30px;font-size:1rem;font-weight:bold;text-transform:uppercase;letter-spacing:2px;border-radius:8px;cursor:pointer;width:100%;max-width:560px;box-shadow:0 4px 15px rgba(45,106,79,0.4);transition:all 0.3s ease}
-.btn-enviar-recompensa:hover{background-color:#378761;transform:translateY(-2px)}
-input,select,textarea{width:100%;padding:10px;margin-top:8px;border-radius:6px;border:1px solid #444;background-color:#0e1424;color:#F4F1DE;box-sizing:border-box}
-label{font-size:0.9rem;color:#C29B62}
-.oculto{display:none}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Física del Sonido - Laboratorio Interactivo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000000;
+            color: #00FF00;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Contenedor Principal */
+        .contenedor-principal {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            gap: 0;
+        }
+
+        /* Zona de Controles Superior */
+        .zona-controles {
+            background-color: #0a0a0a;
+            padding: 20px 15px;
+            border-bottom: 2px solid #00FF00;
+            flex: 0 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: 0 4px 8px rgba(0, 255, 0, 0.1);
+        }
+
+        /* Encabezado */
+        .encabezado {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .titulo-principal {
+            font-size: 1.2rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #00FF00;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .subtitulo {
+            font-size: 0.75rem;
+            color: #00AA00;
+            margin-top: 5px;
+            opacity: 0.8;
+        }
+
+        /* Control Individual */
+        .control-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #00FF00;
+            padding: 0 5px;
+        }
+
+        .control-valor {
+            background-color: #001a00;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #00FF00;
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+            border: 1px solid #00FF00;
+            text-align: right;
+            min-width: 100px;
+        }
+
+        /* Slider */
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #001a00, #00AA00);
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #00FF00;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+            border: 2px solid #00FF00;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #00FF00;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+            border: 2px solid #00FF00;
+        }
+
+        /* Botones de Control */
+        .control-botones {
+            display: flex;
+            gap: 15px;
+            margin-top: 5px;
+        }
+
+        .btn-maestro {
+            flex: 1;
+            padding: 14px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 2px solid #00FF00;
+            border-radius: 6px;
+            background-color: #000000;
+            color: #00FF00;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+        }
+
+        .btn-maestro:active {
+            transform: scale(0.95);
+        }
+
+        .btn-maestro.activo {
+            background-color: #00FF00;
+            color: #000000;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+        }
+
+        .botones-amplitud {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-amplitud {
+            flex: 1;
+            padding: 12px 15px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border: 2px solid #00FF00;
+            border-radius: 6px;
+            background-color: #000000;
+            color: #00FF00;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-amplitud:active {
+            transform: scale(0.95);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.6);
+        }
+
+        /* Zona de Visualización */
+        .zona-visualizacion {
+            flex: 1;
+            background-color: #000000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            min-height: 0;
+        }
+
+        canvas {
+            border: 2px solid #00FF00;
+            border-radius: 8px;
+            background-color: #000000;
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        /* Información de Estado */
+        .info-estado {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            font-size: 0.7rem;
+            color: #00AA00;
+            opacity: 0.6;
+        }
+
+        /* Responsive para diferentes tamaños */
+        @media (max-height: 500px) {
+            .zona-controles {
+                padding: 12px 10px;
+                gap: 12px;
+            }
+
+            .control-label {
+                font-size: 0.75rem;
+            }
+
+            .btn-maestro {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
 <body>
-<header>
-<h1>La Forja del Artesano</h1>
-<div class="sub">Configura tu pulsera y envía tu pedido</div>
-</header>
+    <div class="contenedor-principal">
+        <!-- ZONA DE CONTROLES -->
+        <div class="zona-controles">
+            <div class="encabezado">
+                <div class="titulo-principal">⚡ Laboratorio de Sonido ⚡</div>
+                <div class="subtitulo">Física del Sonido y Vibraciones Mecánicas</div>
+            </div>
 
-<div class="marcador-tesoro">
-<div>COFRE ACTUAL:</div>
-<div class="precio-total" id="txt-total">$1.00</div>
-</div>
+            <!-- Control 1: Frecuencia -->
+            <div class="control-item">
+                <div class="control-label">
+                    <span>📊 Frecuencia (Hz)</span>
+                    <span class="control-valor" id="valor-frecuencia">20 Hz</span>
+                </div>
+                <input type="range" id="slider-frecuencia" min="20" max="400" value="20" step="1">
+            </div>
 
-<div class="seccion-quest">
-<h3>Paso 1: Elige el Estilo</h3>
-<div class="grid-opciones">
-<div class="tarjeta-seleccion activa" onclick="seleccionarEstilo('Nudo Cobra',1.00,this)">Nudo Cobra<br><span class="sub">$1.00 USD</span></div>
-<div class="tarjeta-seleccion" onclick="seleccionarEstilo('Aleta de Tiburón',1.50,this)">Aleta de Tiburón<br><span class="sub">$1.50 USD</span></div>
-</div>
-</div>
+            <!-- Control 2: Velocidad de Onda -->
+            <div class="control-item">
+                <div class="control-label">
+                    <span>🌊 Velocidad de Onda</span>
+                    <span class="control-valor" id="valor-velocidad">1.0x</span>
+                </div>
+                <input type="range" id="slider-velocidad" min="0.1" max="3" value="1" step="0.1">
+            </div>
 
-<div class="seccion-quest">
-<h3>Paso 2: Elige el Material</h3>
-<div class="grid-opciones">
-<div class="tarjeta-seleccion activa" onclick="seleccionarMaterial('Paracord','Verde Militar',this)">Paracord<br><span class="sub">Verde Militar</span></div>
-<div class="tarjeta-seleccion" onclick="seleccionarMaterial('Cáñamo','Blanco',this)">Cáñamo<br><span class="sub">Rosado, Blanco, Negro, Verde</span></div>
-</div>
-</div>
+            <!-- Controles Maestro y Amplitud -->
+            <div class="control-botones">
+                <button class="btn-maestro" id="btn-maestro">▶ ENCENDER</button>
+                <div class="botones-amplitud">
+                    <button class="btn-amplitud" id="btn-bajar">−</button>
+                    <button class="btn-amplitud" id="btn-subir">+</button>
+                </div>
+            </div>
+        </div>
 
-<div class="seccion-quest">
-<h3>Paso 3: Método de Entrega</h3>
-<div class="grid-opciones">
-<div class="tarjeta-seleccion activa" onclick="seleccionarEntrega('Punto de encuentro',0,this)">Punto de encuentro<br><span class="sub">Gratis</span></div>
-<div class="tarjeta-seleccion" onclick="seleccionarEntrega('Envío a domicilio',5,this)">Envío a domicilio<br><span class="sub">+$5.00 USD</span></div>
-</div>
-</div>
+        <!-- ZONA DE VISUALIZACIÓN -->
+        <div class="zona-visualizacion">
+            <canvas id="canvas-onda"></canvas>
+            <div class="info-estado" id="info-estado">Estado: Apagado</div>
+        </div>
+    </div>
 
-<div class="seccion-quest">
-<h3>Paso 4: Datos del Cliente</h3>
-<label>Nombre del cliente</label>
-<input type="text" id="nombreCliente" placeholder="Ej. Juan Pérez">
-<label>Teléfono del cliente</label>
-<input type="text" id="telefonoCliente" placeholder="Ej. 7012-3456">
-<div id="campoDireccion" class="oculto">
-<label>Dirección completa</label>
-<textarea id="direccionCliente" rows="2" placeholder="Ej. Calle Los Olivos #23, Col. Centro"></textarea>
-</div>
-<div id="campoPunto" >
-<label>Punto de encuentro o tienda cercana</label>
-<input type="text" id="puntoEncuentro" placeholder="Ej. Tienda El Sol, frente al parque">
-</div>
-</div>
+    <script>
+        // ==================== CONTEXTO DE AUDIO ====================
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        let oscillator = null;
+        let gainNode = null;
+        let isPlaying = false;
 
-<button class="btn-enviar-recompensa" onclick="enviarPedido()">Enviar Pedido al Artesano</button>
+        // Inicializar el nodo de ganancia
+        gainNode = audioContext.createGain();
+        gainNode.connect(audioContext.destination);
+        gainNode.gain.value = 0.3; // Volumen inicial moderado
 
-<script>
-let precioBase=1.00;
-let precioEnvio=0.00;
-let datosPedido={estilo:'Nudo Cobra',material:'Paracord',color:'Verde Militar',entrega:'Punto de encuentro',total:1.00};
+        // ==================== VARIABLES DE CONTROL ====================
+        let frecuencia = 20; // Hz
+        let velocidadOnda = 1; // Multiplicador visual
+        let amplitud = 30; // Altura de la onda en píxeles
 
-function actualizarTotal(){
-let total=precioBase+precioEnvio;
-datosPedido.total=total;
-document.getElementById('txt-total').innerText=`$${total.toFixed(2)}`;
-return total;
-}
+        // ==================== REFERENCIAS AL DOM ====================
+        const sliderFrecuencia = document.getElementById('slider-frecuencia');
+        const sliderVelocidad = document.getElementById('slider-velocidad');
+        const btnMaestro = document.getElementById('btn-maestro');
+        const btnSubir = document.getElementById('btn-subir');
+        const btnBajar = document.getElementById('btn-bajar');
+        const canvas = document.getElementById('canvas-onda');
+        const ctx = canvas.getContext('2d');
+        const valorFrecuencia = document.getElementById('valor-frecuencia');
+        const valorVelocidad = document.getElementById('valor-velocidad');
+        const infoEstado = document.getElementById('info-estado');
 
-function seleccionarEstilo(nombre,precio,el){
-document.querySelectorAll('[onclick^="seleccionarEstilo"]').forEach(e=>e.classList.remove('activa'));
-el.classList.add('activa');
-datosPedido.estilo=nombre;
-precioBase=precio;
-actualizarTotal();
-}
+        // ==================== CONFIGURAR CANVAS ====================
+        function configurarCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = Math.min(window.innerWidth - 30, 600);
+            canvas.height = Math.max(rect.height - 20, 150);
+        }
 
-function seleccionarMaterial(nombre,color,el){
-document.querySelectorAll('[onclick^="seleccionarMaterial"]').forEach(e=>e.classList.remove('activa'));
-el.classList.add('activa');
-datosPedido.material=nombre;
-datosPedido.color=color;
-}
+        configurarCanvas();
+        window.addEventListener('resize', configurarCanvas);
 
-function seleccionarEntrega(tipo,precio,el){
-document.querySelectorAll('[onclick^="seleccionarEntrega"]').forEach(e=>e.classList.remove('activa'));
-el.classList.add('activa');
-datosPedido.entrega=tipo;
-precioEnvio=precio;
-if(tipo==='Envío a domicilio'){
-document.getElementById('campoDireccion').classList.remove('oculto');
-document.getElementById('campoPunto').classList.add('oculto');
-}else{
-document.getElementById('campoDireccion').classList.add('oculto');
-document.getElementById('campoPunto').classList.remove('oculto');
-}
-actualizarTotal();
-}
+        // ==================== FUNCIONES DE AUDIO ====================
+        function encenderAudio() {
+            if (isPlaying) return;
 
-function enviarPedido(){
-let nombre=document.getElementById('nombreCliente').value.trim();
-let telefono=document.getElementById('telefonoCliente').value.trim();
-let direccion=document.getElementById('direccionCliente').value.trim();
-let punto=document.getElementById('puntoEncuentro').value.trim();
-if(nombre===''||telefono===''){alert('Por favor completa el nombre y teléfono del cliente.');return;}
-if(datosPedido.entrega==='Envío a domicilio'&&direccion===''){alert('Por favor ingresa la dirección completa.');return;}
-if(datosPedido.entrega==='Punto de encuentro'&&punto===''){alert('Por favor ingresa el punto de encuentro.');return;}
-let totalFinal=actualizarTotal();
-let codEntrega=datosPedido.entrega==='Envío a domicilio'?'D':'P';
-let sello=`${datosPedido.material}-${datosPedido.estilo}-${codEntrega}-T${totalFinal.toFixed(2).replace('.','')}`;
-let mensaje=`🛠️ *Nuevo Pedido de Pulsera* 🛠️%0A`+
-`• Cliente: ${nombre}%0A`+
-`• Teléfono: ${telefono}%0A`+
-`• Material: ${datosPedido.material}%0A`+
-`• Color: ${datosPedido.color}%0A`+
-`• Estilo: ${datosPedido.estilo}%0A`+
-`• Entrega: ${datosPedido.entrega}%0A`+
-(datosPedido.entrega==='Envío a domicilio'?`• Dirección: ${direccion}%0A`:`• Punto de encuentro: ${punto}%0A`)+
-`• Total: $${totalFinal.toFixed(2)}%0A%0A`+
-`[🔒 Código de Seguridad: ${sello}]`;
-let url=`https://api.whatsapp.com/send?phone=+50370654298&text=${mensaje}`;
-window.open(url,'_blank');
-}
-</script>
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+
+            oscillator = audioContext.createOscillator();
+            oscillator.type = 'sine';
+            oscillator.frequency.value = frecuencia;
+            oscillator.connect(gainNode);
+            oscillator.start();
+            isPlaying = true;
+
+            btnMaestro.classList.add('activo');
+            btnMaestro.textContent = '⏸ APAGAR';
+            infoEstado.textContent = '✓ Estado: EMITIENDO';
+        }
+
+        function apagarAudio() {
+            if (!isPlaying) return;
+
+            oscillator.stop();
+            oscillator = null;
+            isPlaying = false;
+
+            btnMaestro.classList.remove('activo');
+            btnMaestro.textContent = '▶ ENCENDER';
+            infoEstado.textContent = 'Estado: Apagado';
+        }
+
+        function actualizarFrecuencia(valor) {
+            frecuencia = parseFloat(valor);
+            valorFrecuencia.textContent = `${Math.round(frecuencia)} Hz`;
+
+            if (isPlaying && oscillator) {
+                oscillator.frequency.setTargetAtTime(
+                    frecuencia,
+                    audioContext.currentTime,
+                    0.01
+                );
+            }
+        }
+
+        function actualizarVelocidad(valor) {
+            velocidadOnda = parseFloat(valor);
+            valorVelocidad.textContent = `${velocidadOnda.toFixed(1)}x`;
+        }
+
+        function subirAmplitud() {
+            amplitud = Math.min(amplitud + 5, 100);
+            if (isPlaying && gainNode) {
+                gainNode.gain.setTargetAtTime(
+                    Math.min(gainNode.gain.value + 0.05, 0.8),
+                    audioContext.currentTime,
+                    0.01
+                );
+            }
+        }
+
+        function bajarAmplitud() {
+            amplitud = Math.max(amplitud - 5, 5);
+            if (isPlaying && gainNode) {
+                gainNode.gain.setTargetAtTime(
+                    Math.max(gainNode.gain.value - 0.05, 0.05),
+                    audioContext.currentTime,
+                    0.01
+                );
+            }
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        btnMaestro.addEventListener('click', () => {
+            if (isPlaying) {
+                apagarAudio();
+            } else {
+                encenderAudio();
+            }
+        });
+
+        btnSubir.addEventListener('click', subirAmplitud);
+        btnBajar.addEventListener('click', bajarAmplitud);
+
+        sliderFrecuencia.addEventListener('input', (e) => {
+            actualizarFrecuencia(e.target.value);
+        });
+
+        sliderVelocidad.addEventListener('input', (e) => {
+            actualizarVelocidad(e.target.value);
+        });
+
+        // ==================== ANIMACIÓN Y DIBUJO ====================
+        let tiempoInicio = performance.now();
+        let desplazamiento = 0;
+
+        function dibujarOnda(timestamp) {
+            // Limpiar canvas
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Configurar estilo de línea
+            ctx.strokeStyle = '#00FF00';
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            // Calcular desplazamiento basado en velocidad
+            const deltaTime = (timestamp - tiempoInicio) / 1000;
+            desplazamiento = (deltaTime * velocidadOnda * 100) % canvas.width;
+
+            // Dibujar onda
+            const centerY = canvas.height / 2;
+            const wavelength = (canvas.width / (frecuencia / 20)); // Ajuste visual
+            const numPuntos = canvas.width * 2;
+
+            ctx.beginPath();
+
+            for (let i = 0; i < numPuntos; i++) {
+                const x = (i - desplazamiento) % canvas.width;
+                if (x < 0) continue;
+
+                // Función senoidal: y = amplitud * sin(2π * x / longitud de onda)
+                const fase = (x / wavelength) * Math.PI * 2;
+                const y = centerY + Math.sin(fase) * amplitud;
+
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+
+            ctx.stroke();
+
+            // Dibujar línea central de referencia
+            ctx.strokeStyle = '#00AA00';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(canvas.width, centerY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Dibujar marcas de amplitud
+            ctx.strokeStyle = '#005500';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([2, 2]);
+            ctx.beginPath();
+            ctx.moveTo(0, centerY - amplitud);
+            ctx.lineTo(canvas.width, centerY - amplitud);
+            ctx.moveTo(0, centerY + amplitud);
+            ctx.lineTo(canvas.width, centerY + amplitud);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Continuar animación
+            requestAnimationFrame(dibujarOnda);
+        }
+
+        // Iniciar la animación
+        requestAnimationFrame(dibujarOnda);
+
+        // ==================== MANEJO DE EVENTOS TÁCTILES ====================
+        document.addEventListener('touchstart', () => {
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        });
+
+        // Mostrar estado inicial
+        actualizarFrecuencia(20);
+        actualizarVelocidad(1);
+    </script>
 </body>
 </html>
