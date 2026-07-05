@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Forja del Artesano - Pedido de Pulseras</title>
+<style>
+body{background-color:#0B132B;color:#F4F1DE;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;margin:0;padding:20px;display:flex;flex-direction:column;align-items:center}
+header{text-align:center;margin-bottom:30px;border-bottom:1px solid #C29B62;padding-bottom:15px;width:100%;max-width:600px}
+h1{font-size:1.8rem;letter-spacing:3px;text-transform:uppercase;color:#C29B62;margin:0}
+.sub{color:#9A9FA6;font-size:0.85rem;margin-top:5px}
+.marcador-tesoro{background-color:#111B35;border:2px solid #C29B62;padding:15px;border-radius:8px;width:100%;max-width:560px;box-sizing:border-box;margin-bottom:25px;display:flex;justify-content:space-between;align-items:center;font-weight:bold}
+.precio-total{color:#2ecc71;font-size:1.4rem}
+.seccion-quest{background-color:#111B35;border:1px solid rgba(194,155,98,0.3);border-radius:12px;padding:20px;width:100%;max-width:560px;box-sizing:border-box;margin-bottom:20px}
+h3{margin-top:0;text-transform:uppercase;font-size:1rem;letter-spacing:1px;color:#F4F1DE;border-left:3px solid #C29B62;padding-left:10px}
+.grid-opciones{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:15px}
+.tarjeta-seleccion{border:1px solid #444;background-color:#0e1424;border-radius:8px;padding:12px;cursor:pointer;text-align:center;transition:all 0.3s ease;position:relative}
+.tarjeta-seleccion.activa{border-color:#C29B62;box-shadow:0 0 10px rgba(194,155,98,0.2);background-color:#172242}
+.btn-enviar-recompensa{background-color:#2d6a4f;color:#F4F1DE;border:1px solid #C29B62;padding:15px 30px;font-size:1rem;font-weight:bold;text-transform:uppercase;letter-spacing:2px;border-radius:8px;cursor:pointer;width:100%;max-width:560px;box-shadow:0 4px 15px rgba(45,106,79,0.4);transition:all 0.3s ease}
+.btn-enviar-recompensa:hover{background-color:#378761;transform:translateY(-2px)}
+input,select,textarea{width:100%;padding:10px;margin-top:8px;border-radius:6px;border:1px solid #444;background-color:#0e1424;color:#F4F1DE;box-sizing:border-box}
+label{font-size:0.9rem;color:#C29B62}
+.oculto{display:none}
+</style>
+</head>
+<body>
+<header>
+<h1>La Forja del Artesano</h1>
+<div class="sub">Configura tu pulsera y envía tu pedido</div>
+</header>
+
+<div class="marcador-tesoro">
+<div>COFRE ACTUAL:</div>
+<div class="precio-total" id="txt-total">$1.00</div>
+</div>
+
+<div class="seccion-quest">
+<h3>Paso 1: Elige el Estilo</h3>
+<div class="grid-opciones">
+<div class="tarjeta-seleccion activa" onclick="seleccionarEstilo('Nudo Cobra',1.00,this)">Nudo Cobra<br><span class="sub">$1.00 USD</span></div>
+<div class="tarjeta-seleccion" onclick="seleccionarEstilo('Aleta de Tiburón',1.50,this)">Aleta de Tiburón<br><span class="sub">$1.50 USD</span></div>
+</div>
+</div>
+
+<div class="seccion-quest">
+<h3>Paso 2: Elige el Material</h3>
+<div class="grid-opciones">
+<div class="tarjeta-seleccion activa" onclick="seleccionarMaterial('Paracord','Verde Militar',this)">Paracord<br><span class="sub">Verde Militar</span></div>
+<div class="tarjeta-seleccion" onclick="seleccionarMaterial('Cáñamo','Blanco',this)">Cáñamo<br><span class="sub">Rosado, Blanco, Negro, Verde</span></div>
+</div>
+</div>
+
+<div class="seccion-quest">
+<h3>Paso 3: Método de Entrega</h3>
+<div class="grid-opciones">
+<div class="tarjeta-seleccion activa" onclick="seleccionarEntrega('Punto de encuentro',0,this)">Punto de encuentro<br><span class="sub">Gratis</span></div>
+<div class="tarjeta-seleccion" onclick="seleccionarEntrega('Envío a domicilio',5,this)">Envío a domicilio<br><span class="sub">+$5.00 USD</span></div>
+</div>
+</div>
+
+<div class="seccion-quest">
+<h3>Paso 4: Datos del Cliente</h3>
+<label>Nombre del cliente</label>
+<input type="text" id="nombreCliente" placeholder="Ej. Juan Pérez">
+<label>Teléfono del cliente</label>
+<input type="text" id="telefonoCliente" placeholder="Ej. 7012-3456">
+<div id="campoDireccion" class="oculto">
+<label>Dirección completa</label>
+<textarea id="direccionCliente" rows="2" placeholder="Ej. Calle Los Olivos #23, Col. Centro"></textarea>
+</div>
+<div id="campoPunto" >
+<label>Punto de encuentro o tienda cercana</label>
+<input type="text" id="puntoEncuentro" placeholder="Ej. Tienda El Sol, frente al parque">
+</div>
+</div>
+
+<button class="btn-enviar-recompensa" onclick="enviarPedido()">Enviar Pedido al Artesano</button>
+
+<script>
+let precioBase=1.00;
+let precioEnvio=0.00;
+let datosPedido={estilo:'Nudo Cobra',material:'Paracord',color:'Verde Militar',entrega:'Punto de encuentro',total:1.00};
+
+function actualizarTotal(){
+let total=precioBase+precioEnvio;
+datosPedido.total=total;
+document.getElementById('txt-total').innerText=`$${total.toFixed(2)}`;
+return total;
+}
+
+function seleccionarEstilo(nombre,precio,el){
+document.querySelectorAll('[onclick^="seleccionarEstilo"]').forEach(e=>e.classList.remove('activa'));
+el.classList.add('activa');
+datosPedido.estilo=nombre;
+precioBase=precio;
+actualizarTotal();
+}
+
+function seleccionarMaterial(nombre,color,el){
+document.querySelectorAll('[onclick^="seleccionarMaterial"]').forEach(e=>e.classList.remove('activa'));
+el.classList.add('activa');
+datosPedido.material=nombre;
+datosPedido.color=color;
+}
+
+function seleccionarEntrega(tipo,precio,el){
+document.querySelectorAll('[onclick^="seleccionarEntrega"]').forEach(e=>e.classList.remove('activa'));
+el.classList.add('activa');
+datosPedido.entrega=tipo;
+precioEnvio=precio;
+if(tipo==='Envío a domicilio'){
+document.getElementById('campoDireccion').classList.remove('oculto');
+document.getElementById('campoPunto').classList.add('oculto');
+}else{
+document.getElementById('campoDireccion').classList.add('oculto');
+document.getElementById('campoPunto').classList.remove('oculto');
+}
+actualizarTotal();
+}
+
+function enviarPedido(){
+let nombre=document.getElementById('nombreCliente').value.trim();
+let telefono=document.getElementById('telefonoCliente').value.trim();
+let direccion=document.getElementById('direccionCliente').value.trim();
+let punto=document.getElementById('puntoEncuentro').value.trim();
+if(nombre===''||telefono===''){alert('Por favor completa el nombre y teléfono del cliente.');return;}
+if(datosPedido.entrega==='Envío a domicilio'&&direccion===''){alert('Por favor ingresa la dirección completa.');return;}
+if(datosPedido.entrega==='Punto de encuentro'&&punto===''){alert('Por favor ingresa el punto de encuentro.');return;}
+let totalFinal=actualizarTotal();
+let codEntrega=datosPedido.entrega==='Envío a domicilio'?'D':'P';
+let sello=`${datosPedido.material}-${datosPedido.estilo}-${codEntrega}-T${totalFinal.toFixed(2).replace('.','')}`;
+let mensaje=`🛠️ *Nuevo Pedido de Pulsera* 🛠️%0A`+
+`• Cliente: ${nombre}%0A`+
+`• Teléfono: ${telefono}%0A`+
+`• Material: ${datosPedido.material}%0A`+
+`• Color: ${datosPedido.color}%0A`+
+`• Estilo: ${datosPedido.estilo}%0A`+
+`• Entrega: ${datosPedido.entrega}%0A`+
+(datosPedido.entrega==='Envío a domicilio'?`• Dirección: ${direccion}%0A`:`• Punto de encuentro: ${punto}%0A`)+
+`• Total: $${totalFinal.toFixed(2)}%0A%0A`+
+`[🔒 Código de Seguridad: ${sello}]`;
+let url=`https://api.whatsapp.com/send?phone=+50370654298&text=${mensaje}`;
+window.open(url,'_blank');
+}
+</script>
+</body>
+</html>
