@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Ondas Transversales Interactivas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background-color: #000000;
+            color: #39FF14;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        /* ==================== CONTENEDOR PRINCIPAL ==================== */
+        .contenedor-principal {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            gap: 0;
+        }
+
+        /* ==================== ZONA SUPERIOR (Botones Principales) ==================== */
+        .zona-superior {
+            background-color: #0a0a0a;
+            padding: 20px;
+            border-bottom: 2px solid #39FF14;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.15);
+        }
+
+        .btn-principal {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: 2px solid #39FF14;
+            background-color: #000000;
+            color: #39FF14;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
+            box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
+        }
+
+        .btn-principal:hover {
+            background-color: #39FF14;
+            color: #000000;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .btn-principal:active {
+            transform: scale(0.98);
+        }
+
+        .btn-principal.activo {
+            background-color: #39FF14;
+            color: #000000;
+            box-shadow: 0 0 25px rgba(57, 255, 20, 1);
+        }
+
+        /* Input file oculto */
+        #inputVideo {
+            display: none;
+        }
+
+        /* ==================== ZONA CENTRAL (Tres Columnas) ==================== */
+        .zona-central {
+            flex: 1;
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            min-height: 0;
+            background-color: #000000;
+        }
+
+        /* Columnas */
+        .columna {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 0 0 auto;
+        }
+
+        .columna-izquierda, .columna-derecha {
+            flex: 0 0 120px;
+        }
+
+        .columna-central {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* ==================== BOTONES DE CONTROL ==================== */
+        .btn-control {
+            padding: 12px 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border: 1px solid #39FF14;
+            background-color: #0a0a0a;
+            color: #39FF14;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 5px rgba(57, 255, 20, 0.4);
+        }
+
+        .btn-control:hover {
+            background-color: #39FF14;
+            color: #000000;
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.6);
+        }
+
+        .btn-control:active {
+            transform: scale(0.95);
+        }
+
+        .btn-control.activo {
+            background-color: #39FF14;
+            color: #000000;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.8);
+        }
+
+        .etiqueta-columna {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            color: #39FF14;
+            text-shadow: 0 0 5px rgba(57, 255, 20, 0.4);
+            padding-bottom: 5px;
+            border-bottom: 1px solid #39FF14;
+            text-align: center;
+        }
+
+        /* ==================== VIDEO ELEMENT ==================== */
+        #videoElement {
+            width: 100%;
+            height: 100%;
+            background-color: #0a0a0a;
+            border: 2px solid #39FF14;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
+            object-fit: contain;
+        }
+
+        .contenedor-video {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #0a0a0a;
+            border: 2px solid #39FF14;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.2);
+        }
+
+        .texto-sin-video {
+            color: #39FF14;
+            font-size: 1rem;
+            text-align: center;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* ==================== ZONA INFERIOR (Canvas) ==================== */
+        .zona-inferior {
+            flex: 0 0 200px;
+            background-color: #0a0a0a;
+            border-top: 2px solid #39FF14;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.1) inset;
+        }
+
+        #canvasOnda {
+            width: 100%;
+            height: 100%;
+            background-color: #000000;
+            border: 1px solid #39FF14;
+            border-radius: 6px;
+            display: block;
+            box-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
+        }
+
+        /* ==================== INFORMACIÓN DE ESTADO ==================== */
+        .info-estado {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 0.75rem;
+            color: #39FF14;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 10px 15px;
+            border: 1px solid #39FF14;
+            border-radius: 6px;
+            text-shadow: 0 0 5px rgba(57, 255, 20, 0.5);
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 1024px) {
+            .zona-central {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .columna-izquierda, .columna-derecha {
+                flex: 0 0 auto;
+                flex-direction: row;
+            }
+
+            .btn-control {
+                flex: 1;
+                padding: 10px 12px;
+                font-size: 0.8rem;
+            }
+
+            .zona-inferior {
+                flex: 0 0 150px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .zona-superior {
+                padding: 15px;
+                gap: 10px;
+            }
+
+            .btn-principal {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+
+            .zona-central {
+                padding: 10px;
+                gap: 8px;
+            }
+
+            .zona-inferior {
+                flex: 0 0 120px;
+                padding: 10px;
+            }
+
+            .info-estado {
+                top: 10px;
+                right: 10px;
+                font-size: 0.65rem;
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor-principal">
+        <!-- ==================== ZONA SUPERIOR ==================== -->
+        <div class="zona-superior">
+            <button class="btn-principal" id="btnMicrófono">
+                🎧 Activar Micrófono / Bluetooth
+            </button>
+            <button class="btn-principal" id="btnVideo">
+                📁 Elegir Video de Galería
+            </button>
+            <input type="file" id="inputVideo" accept="video/*">
+        </div>
+
+        <!-- ==================== ZONA CENTRAL (3 Columnas) ==================== -->
+        <div class="zona-central">
+            <!-- COLUMNA IZQUIERDA: Filtros de Audio -->
+            <div class="columna columna-izquierda">
+                <div class="etiqueta-columna">🎵 Filtro</div>
+                <button class="btn-control" id="btnGrave">Grave</button>
+                <button class="btn-control activo" id="btnNormal">Normal</button>
+                <button class="btn-control" id="btnAgudo">Agudo</button>
+            </div>
+
+            <!-- COLUMNA CENTRAL: Video -->
+            <div class="columna columna-central">
+                <div class="contenedor-video">
+                    <video id="videoElement" crossorigin="anonymous"></video>
+                    <div class="texto-sin-video" id="textoSinVideo">
+                        📹 Selecciona un video para comenzar
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMNA DERECHA: Velocidad -->
+            <div class="columna columna-derecha">
+                <div class="etiqueta-columna">⏱️ Velocidad</div>
+                <button class="btn-control" id="btnMuyLento">0.25x</button>
+                <button class="btn-control" id="btnLento">0.5x</button>
+                <button class="btn-control activo" id="btnVelNormal">1x</button>
+                <button class="btn-control" id="btnRapido">1.5x</button>
+            </div>
+        </div>
+
+        <!-- ==================== ZONA INFERIOR: Canvas ==================== -->
+        <div class="zona-inferior">
+            <canvas id="canvasOnda"></canvas>
+        </div>
+    </div>
+
+    <!-- ==================== INFORMACIÓN DE ESTADO ==================== -->
+    <div class="info-estado" id="infoEstado">
+        Estado: Inactivo
+    </div>
+
+    <script>
+        // ==================== CONTEXTO DE AUDIO ==================== 
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        let analyser = null;
+        let micStream = null;
+        let videoSource = null;
+        let biquadFilter = null;
+        let currentFilterType = 'normal'; // 'grave', 'normal', 'agudo'
+        let micActive = false;
+        let videoActive = false;
+
+        // ==================== REFERENCIAS AL DOM ====================
+        const btnMicrófono = document.getElementById('btnMicrófono');
+        const btnVideo = document.getElementById('btnVideo');
+        const inputVideo = document.getElementById('inputVideo');
+        const videoElement = document.getElementById('videoElement');
+        const textoSinVideo = document.getElementById('textoSinVideo');
+        const canvasOnda = document.getElementById('canvasOnda');
+        const ctxOnda = canvasOnda.getContext('2d');
+        const infoEstado = document.getElementById('infoEstado');
+
+        // Botones de filtro
+        const btnGrave = document.getElementById('btnGrave');
+        const btnNormal = document.getElementById('btnNormal');
+        const btnAgudo = document.getElementById('btnAgudo');
+
+        // Botones de velocidad
+        const btnMuyLento = document.getElementById('btnMuyLento');
+        const btnLento = document.getElementById('btnLento');
+        const btnVelNormal = document.getElementById('btnVelNormal');
+        const btnRapido = document.getElementById('btnRapido');
+
+        // ==================== CONFIGURAR CANVAS ====================
+        function configurarCanvas() {
+            canvasOnda.width = canvasOnda.parentElement.clientWidth;
+            canvasOnda.height = canvasOnda.parentElement.clientHeight;
+        }
+
+        configurarCanvas();
+        window.addEventListener('resize', configurarCanvas);
+
+        // ==================== FUNCIONES DE AUDIO ====================
+        async function inicializarMicrófono() {
+            try {
+                if (micActive) {
+                    // Desactivar micrófono
+                    if (micStream) {
+                        micStream.getTracks().forEach(track => track.stop());
+                        micStream = null;
+                    }
+                    micActive = false;
+                    btnMicrófono.classList.remove('activo');
+                    infoEstado.textContent = 'Estado: Micrófono Desactivado';
+                    return;
+                }
+
+                // Solicitar acceso al micrófono
+                micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                
+                // Crear nodo de entrada desde micrófono
+                const micSource = audioContext.createMediaStreamSource(micStream);
+                
+                // Crear nodo analizador
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 2048;
+                
+                // Crear filtro biquad
+                biquadFilter = audioContext.createBiquadFilter();
+                biquadFilter.type = 'peaking';
+                biquadFilter.frequency.value = 1000;
+                biquadFilter.gain.value = 0;
+                
+                // Conectar: micrófono -> filtro -> analizador -> destino
+                micSource.connect(biquadFilter);
+                biquadFilter.connect(analyser);
+                analyser.connect(audioContext.destination);
+                
+                micActive = true;
+                btnMicrófono.classList.add('activo');
+                infoEstado.textContent = '✓ Estado: Micrófono Activo';
+                
+                iniciarAnimacionOnda();
+            } catch (error) {
+                console.error('Error al acceder al micrófono:', error);
+                infoEstado.textContent = '✗ Error: No se pudo acceder al micrófono';
+                alert('No se pudo acceder al micrófono. Verifica los permisos.');
+            }
+        }
+
+        function cargarVideo() {
+            inputVideo.click();
+        }
+
+        inputVideo.addEventListener('change', async (e) => {
+            const archivo = e.target.files[0];
+            if (!archivo) return;
+
+            // Crear URL del archivo
+            const url = URL.createObjectURL(archivo);
+            videoElement.src = url;
+            textoSinVideo.style.display = 'none';
+
+            // Resume audio context si está suspendido
+            if (audioContext.state === 'suspended') {
+                await audioContext.resume();
+            }
+
+            // Esperar a que el video esté listo
+            videoElement.addEventListener('loadedmetadata', () => {
+                // Crear fuente de audio desde video
+                if (videoSource) {
+                    videoSource.disconnect();
+                }
+
+                videoSource = audioContext.createMediaElementSource(videoElement);
+                
+                // Crear nodo analizador si no existe
+                if (!analyser) {
+                    analyser = audioContext.createAnalyser();
+                    analyser.fftSize = 2048;
+                }
+
+                // Crear filtro biquad si no existe
+                if (!biquadFilter) {
+                    biquadFilter = audioContext.createBiquadFilter();
+                    biquadFilter.type = 'peaking';
+                    biquadFilter.frequency.value = 1000;
+                    biquadFilter.gain.value = 0;
+                }
+
+                // Conectar: video -> filtro -> analizador -> destino
+                videoSource.connect(biquadFilter);
+                biquadFilter.connect(analyser);
+                analyser.connect(audioContext.destination);
+
+                videoActive = true;
+                videoElement.play();
+                infoEstado.textContent = '✓ Estado: Video Reproduciéndose';
+                iniciarAnimacionOnda();
+            }, { once: true });
+        });
+
+        // ==================== CONTROLES DE FILTRO ====================
+        function aplicarFiltro(tipo) {
+            if (!biquadFilter) return;
+
+            currentFilterType = tipo;
+
+            // Actualizar UI
+            btnGrave.classList.remove('activo');
+            btnNormal.classList.remove('activo');
+            btnAgudo.classList.remove('activo');
+
+            if (tipo === 'grave') {
+                btnGrave.classList.add('activo');
+                biquadFilter.type = 'lowpass';
+                biquadFilter.frequency.value = 200;
+                biquadFilter.gain.value = 0;
+            } else if (tipo === 'agudo') {
+                btnAgudo.classList.add('activo');
+                biquadFilter.type = 'highpass';
+                biquadFilter.frequency.value = 4000;
+                biquadFilter.gain.value = 0;
+            } else {
+                btnNormal.classList.add('activo');
+                biquadFilter.type = 'peaking';
+                biquadFilter.frequency.value = 1000;
+                biquadFilter.gain.value = 0;
+            }
+        }
+
+        btnGrave.addEventListener('click', () => aplicarFiltro('grave'));
+        btnNormal.addEventListener('click', () => aplicarFiltro('normal'));
+        btnAgudo.addEventListener('click', () => aplicarFiltro('agudo'));
+
+        // ==================== CONTROLES DE VELOCIDAD ====================
+        function cambiarVelocidad(factor) {
+            if (!videoActive) return;
+
+            videoElement.playbackRate = factor;
+
+            // Actualizar UI
+            btnMuyLento.classList.remove('activo');
+            btnLento.classList.remove('activo');
+            btnVelNormal.classList.remove('activo');
+            btnRapido.classList.remove('activo');
+
+            if (factor === 0.25) {
+                btnMuyLento.classList.add('activo');
+            } else if (factor === 0.5) {
+                btnLento.classList.add('activo');
+            } else if (factor === 1) {
+                btnVelNormal.classList.add('activo');
+            } else if (factor === 1.5) {
+                btnRapido.classList.add('activo');
+            }
+        }
+
+        btnMuyLento.addEventListener('click', () => cambiarVelocidad(0.25));
+        btnLento.addEventListener('click', () => cambiarVelocidad(0.5));
+        btnVelNormal.addEventListener('click', () => cambiarVelocidad(1));
+        btnRapido.addEventListener('click', () => cambiarVelocidad(1.5));
+
+        // ==================== EVENTOS PRINCIPALES ====================
+        btnMicrófono.addEventListener('click', inicializarMicrófono);
+        btnVideo.addEventListener('click', cargarVideo);
+
+        // ==================== ANIMACIÓN DE ONDA TRANSVERSAL ====================
+        function iniciarAnimacionOnda() {
+            if (!analyser) return;
+
+            const dataArray = new Uint8Array(analyser.frequencyBinCount);
+            const centerY = canvasOnda.height / 2;
+            const amplitudMax = canvasOnda.height / 3;
+
+            function dibujar() {
+                // Obtener datos de tiempo del analizador
+                analyser.getByteTimeDomainData(dataArray);
+
+                // Limpiar canvas
+                ctxOnda.fillStyle = '#000000';
+                ctxOnda.fillRect(0, 0, canvasOnda.width, canvasOnda.height);
+
+                // Dibujar línea de referencia central
+                ctxOnda.strokeStyle = '#39FF14';
+                ctxOnda.lineWidth = 0.5;
+                ctxOnda.setLineDash([5, 5]);
+                ctxOnda.beginPath();
+                ctxOnda.moveTo(0, centerY);
+                ctxOnda.lineTo(canvasOnda.width, centerY);
+                ctxOnda.stroke();
+                ctxOnda.setLineDash([]);
+
+                // Dibujar onda transversal
+                ctxOnda.strokeStyle = '#39FF14';
+                ctxOnda.lineWidth = 2.5;
+                ctxOnda.lineCap = 'round';
+                ctxOnda.lineJoin = 'round';
+                ctxOnda.shadowColor = 'rgba(57, 255, 20, 0.5)';
+                ctxOnda.shadowBlur = 8;
+
+                ctxOnda.beginPath();
+
+                const sliceWidth = canvasOnda.width / dataArray.length;
+                let x = 0;
+
+                for (let i = 0; i < dataArray.length; i++) {
+                    // Convertir valor de 0-255 a -1 a 1
+                    const v = (dataArray[i] - 128) / 128;
+                    
+                    // Calcular posición Y (oscilar verticalmente)
+                    const y = centerY - (v * amplitudMax);
+
+                    if (i === 0) {
+                        ctxOnda.moveTo(x, y);
+                    } else {
+                        ctxOnda.lineTo(x, y);
+                    }
+
+                    x += sliceWidth;
+                }
+
+                ctxOnda.stroke();
+                ctxOnda.shadowColor = 'transparent';
+
+                // Continuar animación
+                requestAnimationFrame(dibujar);
+            }
+
+            dibujar();
+        }
+
+        // ==================== MANEJO DE EVENTOS TÁCTILES ====================
+        document.addEventListener('touchstart', async () => {
+            if (audioContext.state === 'suspended') {
+                await audioContext.resume();
+            }
+        });
+
+        // ==================== INICIALIZACIÓN ====================
+        aplicarFiltro('normal');
+        infoEstado.textContent = 'Estado: Listo';
+    </script>
+</body>
+</html>
